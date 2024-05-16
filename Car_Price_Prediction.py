@@ -45,12 +45,8 @@ def transform_input(input):
     
     return pd.concat([input_df,input_data_df]).fillna(False)
 
-def prediction(input):
-    # Import packages
-    from sklearn.ensemble import RandomForestRegressor
-    from sklearn.model_selection import train_test_split
-    # Transform input data
-    input_data = transform_input(input)
+@st.cache_data
+def make_model(data):
     # Load & preprocess the data
     DATA_PATH = './data/data_clean_20240509.csv'
     data = pd.read_csv(DATA_PATH, sep=';')
@@ -58,11 +54,38 @@ def prediction(input):
     X = data_processed.drop('Price', axis=1)
     y = data_processed['Price']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=123)
+    # Import packages
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.model_selection import train_test_split
     # Define and fit the model
-    rfr = RandomForestRegressor()
-    rfr.fit(X_train, y_train)
-    prediction = rfr.predict(input_data)[0]
+    model = RandomForestRegressor()
+    model.fit(X_train, y_train)
+    return model
+
+def prediction(model, input):
+    # Transform input data
+    input_data = transform_input(input)
+    prediction = model.predict(input_data)[0]
     return prediction
+
+# def prediction(input):
+#     # Import packages
+#     from sklearn.ensemble import RandomForestRegressor
+#     from sklearn.model_selection import train_test_split
+#     # Transform input data
+#     input_data = transform_input(input)
+#     # Load & preprocess the data
+#     DATA_PATH = './data/data_clean_20240509.csv'
+#     data = pd.read_csv(DATA_PATH, sep=';')
+#     data_processed = pd.get_dummies(data, prefix_sep = '_')
+#     X = data_processed.drop('Price', axis=1)
+#     y = data_processed['Price']
+#     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=123)
+#     # Define and fit the model
+#     rfr = RandomForestRegressor()
+#     rfr.fit(X_train, y_train)
+#     prediction = rfr.predict(input_data)[0]
+#     return prediction
 
 # model = load_model('RandomForestRegressor.pkl')
 
@@ -106,7 +129,7 @@ with st.form(key='input'):
     predict = st.form_submit_button('Predict')
     if predict:
        input = {'Klm':klm, 'CubicCapacity':cc, 'Horsepower':hp, 'Age':age, 'Name':name, 'GasType':gastype, 'GearBox':gearbox}
-       st.session_state['pred'] = prediction(input)
+       st.session_state['pred'] = prediction(make_model(data), input)
 
 if 'pred' in st.session_state:
        pred = st.session_state['pred'].copy()
