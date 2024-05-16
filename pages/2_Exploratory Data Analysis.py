@@ -8,11 +8,11 @@ st.set_page_config(layout="wide", page_title='EDA', page_icon=':chart_with_upwar
 
 # Import data
 @st.cache_resource
-def load_data(data_name):
-    data_path = r'./data/'
-    return pd.read_csv(data_path+data_name, sep=';')
+def load_data():
+    DATA_PATH = r'./data/clean/data_clean_20240509.csv'
+    return pd.read_csv(DATA_PATH, sep=';')
 
-data = load_data('data_clean_20240509.csv')
+data = load_data()
 # Shape of the data
 shape = data.shape
 st.sidebar.markdown(f'**Data shape:**<br>*{data.shape[0]:,.0f} rows of data*<br>*{data.shape[1]:,.0f} attributes*', unsafe_allow_html=True)
