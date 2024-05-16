@@ -20,12 +20,6 @@ n.schizas@outlook.com
 st.sidebar.markdown(f'<em>{about_text}<em>', unsafe_allow_html=True)
 st.sidebar.caption(f'<em>{contact_text}<em>', unsafe_allow_html=True)
 
-# @st.cache_data
-# def load_model(file_name):
-#     models_path = r'./models/'
-#     file=open(models_path+file_name, 'rb')
-#     return load(file)
-
 @st.cache_data
 def transform_input(input):
     input_new = input.copy()
@@ -33,7 +27,6 @@ def transform_input(input):
         if key in ['Name', 'GasType', 'GearBox']:
             input_new.update({f'{key}_{input[key]}' : True})
             input_new.pop(key)
-
     input_columns = ['Klm', 'CubicCapacity', 'Horsepower', 'Age', 'Name_Alfa-Romeo','Name_Audi', 'Name_Bmw', 'Name_Chevrolet', 'Name_Citroen', 'Name_DS',
        'Name_Dacia', 'Name_Daewoo', 'Name_Daihatsu', 'Name_Fiat', 'Name_Ford','Name_Honda', 'Name_Hyundai', 'Name_Isuzu', 'Name_Jaguar', 'Name_Jeep',
        'Name_Kia', 'Name_Lancia', 'Name_Land-Rover', 'Name_Lexus','Name_Mazda', 'Name_Mercedes-Benz', 'Name_Mini-Cooper','Name_Mitsubishi', 'Name_Nissan', 'Name_Opel', 'Name_Peugeot',
@@ -42,13 +35,23 @@ def transform_input(input):
        'GasType_Υβριδικό πετρέλαιο', 'GasType_Φυσικό αέριο(cng) - βενζίνη', 'GearBox_Manual', 'GearBox_Αυτόματο', 'GearBox_Ημιαυτόματο']
     input_df = pd.DataFrame(columns=input_columns)
     input_data_df = pd.DataFrame(input_new, index=[0])
-    
     return pd.concat([input_df,input_data_df]).fillna(False)
 
+DATA_PATH = './data/data_clean_20240509.csv'
+
 @st.cache_data
-def make_model():
+def load_data():
+    data = pd.read_csv(DATA_PATH, sep=';')
+    brands = data['Name'].unique()
+    gear_box = data['Name'].unique()
+    gas_types = data['Name'].unique()
+    return brands, gear_box, gas_types
+
+brands, gear_box, gas_types = load_data()
+
+@st.cache_data
+def train_fit_test():
     # Load & preprocess the data
-    DATA_PATH = './data/data_clean_20240509.csv'
     data = pd.read_csv(DATA_PATH, sep=';')
     data_processed = pd.get_dummies(data, prefix_sep = '_')
     X = data_processed.drop('Price', axis=1)
@@ -60,7 +63,14 @@ def make_model():
     # Define and fit the model
     model = RandomForestRegressor()
     model.fit(X_train, y_train)
-    return model
+    # Gather model metrics
+    y_pred = model.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+    mae = mean_absolute_error(y_test, y_pred)
+    r2 = r2_score(y_test, y_pred)    
+    return model, mse, mae, r2
+
+model, mse, mae, r2 = train_fit_test()
 
 def prediction(model, input):
     # Transform input data
@@ -68,46 +78,25 @@ def prediction(model, input):
     prediction = model.predict(input_data)[0]
     return prediction
 
-# def prediction(input):
-#     # Import packages
-#     from sklearn.ensemble import RandomForestRegressor
-#     from sklearn.model_selection import train_test_split
-#     # Transform input data
-#     input_data = transform_input(input)
-#     # Load & preprocess the data
-#     DATA_PATH = './data/data_clean_20240509.csv'
-#     data = pd.read_csv(DATA_PATH, sep=';')
-#     data_processed = pd.get_dummies(data, prefix_sep = '_')
-#     X = data_processed.drop('Price', axis=1)
-#     y = data_processed['Price']
-#     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=123)
-#     # Define and fit the model
-#     rfr = RandomForestRegressor()
-#     rfr.fit(X_train, y_train)
-#     prediction = rfr.predict(input_data)[0]
-#     return prediction
+# brands = ['Citroen', 'Mercedes-Benz', 'Toyota', 'Mitsubishi', 'Jaguar',
+#        'Hyundai', 'Land-Rover', 'Bmw', 'Kia', 'Skoda', 'Opel',
+#        'Volkswagen', 'Daihatsu', 'Nissan', 'Renault', 'Smart', 'Seat',
+#        'Peugeot', 'Mazda', 'Fiat', 'Audi', 'Ford', 'Lexus', 'Volvo',
+#        'Jeep', 'Mini-Cooper', 'Maserati', 'Ferrari', 'Suzuki',
+#        'Chevrolet', 'Dacia', 'Lancia', 'Porsche', 'Alfa', 'Aston', 'DS',
+#        'Daewoo', 'Subaru', 'Isuzu', 'Caterham', 'Honda', 'Wartburg',
+#        'Autobianchi', 'Lamborghini', 'McLaren', 'TVR', 'Piaggio',
+#        'Infiniti', 'Saab', 'Mg', 'Club', 'Triumph', 'Cadillac', 'Abarth',
+#        'Morgan', 'Chrysler', 'Maybach', 'Lada', 'SsangYong', 'Dodge',
+#        'Buick', 'Rolls', 'Bentley', 'Hummer', 'Austin', 'Corvette',
+#        'Plymouth', 'DR', 'Lotus', 'Rover', 'Lynk&Co', 'Pontiac', 'Iveco',
+#        'Cupra', 'Lincoln']
 
-# model = load_model('RandomForestRegressor.pkl')
+# gear_box = ['Manual', 'Αυτόματο', 'Ημιαυτόματο']
 
-brands = ['Citroen', 'Mercedes-Benz', 'Toyota', 'Mitsubishi', 'Jaguar',
-       'Hyundai', 'Land-Rover', 'Bmw', 'Kia', 'Skoda', 'Opel',
-       'Volkswagen', 'Daihatsu', 'Nissan', 'Renault', 'Smart', 'Seat',
-       'Peugeot', 'Mazda', 'Fiat', 'Audi', 'Ford', 'Lexus', 'Volvo',
-       'Jeep', 'Mini-Cooper', 'Maserati', 'Ferrari', 'Suzuki',
-       'Chevrolet', 'Dacia', 'Lancia', 'Porsche', 'Alfa', 'Aston', 'DS',
-       'Daewoo', 'Subaru', 'Isuzu', 'Caterham', 'Honda', 'Wartburg',
-       'Autobianchi', 'Lamborghini', 'McLaren', 'TVR', 'Piaggio',
-       'Infiniti', 'Saab', 'Mg', 'Club', 'Triumph', 'Cadillac', 'Abarth',
-       'Morgan', 'Chrysler', 'Maybach', 'Lada', 'SsangYong', 'Dodge',
-       'Buick', 'Rolls', 'Bentley', 'Hummer', 'Austin', 'Corvette',
-       'Plymouth', 'DR', 'Lotus', 'Rover', 'Lynk&Co', 'Pontiac', 'Iveco',
-       'Cupra', 'Lincoln']
-
-gear_box = ['Manual', 'Αυτόματο', 'Ημιαυτόματο']
-
-gas_types = ['Πετρέλαιο', 'Βενζίνη', 'Αέριο(lpg) - βενζίνη', 'Υβριδικό βενζίνη',
-       'Υβριδικό plug-in βενζίνη', 'Φυσικό αέριο(cng) - βενζίνη',
-       'Υβριδικό πετρέλαιο', 'Υβριδικό plug-in πετρέλαιο']
+# gas_types = ['Πετρέλαιο', 'Βενζίνη', 'Αέριο(lpg) - βενζίνη', 'Υβριδικό βενζίνη',
+#        'Υβριδικό plug-in βενζίνη', 'Φυσικό αέριο(cng) - βενζίνη',
+#        'Υβριδικό πετρέλαιο', 'Υβριδικό plug-in πετρέλαιο']
 
 with st.columns([1,2.6,1])[1]:
     st.title('Car Price Prediction', anchor=False)
@@ -129,7 +118,10 @@ with st.form(key='input'):
     predict = st.form_submit_button('Predict')
     if predict:
        input = {'Klm':klm, 'CubicCapacity':cc, 'Horsepower':hp, 'Age':age, 'Name':name, 'GasType':gastype, 'GearBox':gearbox}
-       st.session_state['pred'] = prediction(make_model(), input)
+       st.session_state['pred'] = prediction(model, input)
+
+
+
 
 if 'pred' in st.session_state:
        pred = st.session_state['pred'].copy()
