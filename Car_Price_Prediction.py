@@ -7,10 +7,10 @@ st.set_page_config(layout="centered", page_title='Car Price Prediction', page_ic
 
 about_text = """
 This is a ML web app designed for predicting car prices.
-You can choose your desired features to receive a prediction.
-Both the training and testing data were web-scraped from web.
+You can choose your desired features to receive your prediction.
+Both the training and testing data were web-scraped.
 Navigate to the second page for an EDA on these data.
-Our model development and data are frequently updated to ensure accuracy.
+The model in use as well the data are frequently updated to ensure accuracy.
 """
 
 contact_text = """
