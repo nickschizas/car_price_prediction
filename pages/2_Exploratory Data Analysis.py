@@ -78,31 +78,33 @@ with main_col[1]:
 
 # Pie chart
 with main_col[0]:
-    top_n = 4
-    gastype_counts = data['GasType'].value_counts().reset_index()
-    gastype_counts_binned = gastype_counts.loc[:top_n-2]
-    gastype_counts_other = gastype_counts.loc[top_n-1:]['count'].sum()
-    gastype_counts_binned.loc[len(gastype_counts_binned)] = ('Other', gastype_counts_other)
-    gastype_counts_binned['pull'] = np.where(gastype_counts_binned['GasType'] == 'Other', 0.2, 0)
-    pie = go.Figure()
-    pie.add_trace(go.Pie(labels=gastype_counts_binned['GasType'], values=gastype_counts_binned['count'], pull=gastype_counts_binned['pull'],
-                         hoverinfo='label+percent',
-                         textposition='inside', textinfo='value', insidetextorientation='radial'))
-    pie.update_layout(title_text='Gas Type counts allocation',title_font_size=20,
-                      legend_title = 'Gas Type',
-                      paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-    st.plotly_chart(pie, use_container_width=True)
+    @st.cache_data
+    def pie_chart():    
+        top_n = 4
+        gastype_counts = data['GasType'].value_counts().reset_index()
+        gastype_counts_binned = gastype_counts.loc[:top_n-2]
+        gastype_counts_other = gastype_counts.loc[top_n-1:]['count'].sum()
+        gastype_counts_binned.loc[len(gastype_counts_binned)] = ('Other', gastype_counts_other)
+        gastype_counts_binned['pull'] = np.where(gastype_counts_binned['GasType'] == 'Other', 0.2, 0)
+        pie = go.Figure()
+        pie.add_trace(go.Pie(labels=gastype_counts_binned['GasType'], values=gastype_counts_binned['count'], pull=gastype_counts_binned['pull'],
+                             hoverinfo='label+percent',
+                             textposition='inside', textinfo='value', insidetextorientation='radial'))
+        pie.update_layout(title_text='Gas Type counts allocation',title_font_size=20,
+                          legend_title = 'Gas Type',
+                          paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(pie, use_container_width=True)
 
 # Boxplots
 with main_col[1]:
-    box_data = data.copy()
-    boxplot = go.Figure()
-    for gastype in box_data['GasType'].unique():
-        box_data_filter = box_data[box_data['GasType']==gastype]
-        boxplot.add_trace(go.Box(y=box_data_filter['Price'], name=gastype))
+    def boxplot():
+        box_data = data.copy()
+        boxplot = go.Figure()
+        for gastype in box_data['GasType'].unique():
+            box_data_filter = box_data[box_data['GasType']==gastype]
+            boxplot.add_trace(go.Box(y=box_data_filter['Price'], name=gastype))
 
-    boxplot.update_layout(title_text='Gas Type vs Price', title_font_size=20,
-                          yaxis_title = 'Price', legend_title = 'Gas Type',
-                          yaxis = dict(showgrid=False), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-
-    st.plotly_chart(boxplot,use_container_width=True)
+        boxplot.update_layout(title_text='Gas Type vs Price', title_font_size=20,
+                              yaxis_title = 'Price', legend_title = 'Gas Type',
+                              yaxis = dict(showgrid=False), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
+        st.plotly_chart(boxplot,use_container_width=True)
