@@ -94,9 +94,11 @@ with main_col[0]:
                           legend_title = 'Gas Type',
                           paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
         st.plotly_chart(pie, use_container_width=True)
+    pie_chart()
 
 # Boxplots
 with main_col[1]:
+    @st.cache_data
     def boxplot():
         box_data = data.copy()
         boxplot = go.Figure()
@@ -108,3 +110,4 @@ with main_col[1]:
                               yaxis_title = 'Price', legend_title = 'Gas Type',
                               yaxis = dict(showgrid=False), paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
         st.plotly_chart(boxplot,use_container_width=True)
+    boxplot()
