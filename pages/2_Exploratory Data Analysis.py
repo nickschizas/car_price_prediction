@@ -24,7 +24,7 @@ ads_counts.columns = ['Brand', 'Ads Counts']
 st.sidebar.dataframe(ads_counts, use_container_width=True, hide_index=True)
 
 # Filter the data
-variable = st.selectbox('Histogram variable', options=['Price', 'Klm', 'CubicCentimetres', 'Horsepower', 'Age'])
+variable = st.selectbox('Histogram variable', options=['Price', 'Klm', 'CubicCapacity', 'Horsepower', 'Age'])
 filter_col = st.columns(4)
 with filter_col[0]:
     name_options = ['All'] + list(data['Name'].unique())
