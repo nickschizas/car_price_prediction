@@ -37,7 +37,7 @@ def transform_input(input):
     input_data_df = pd.DataFrame(input_new, index=[0])
     return pd.concat([input_df,input_data_df]).fillna(False)
 
-DATA_PATH = './data/data_clean_20240509.csv'
+DATA_PATH = './data_new/clean/data_clean_20240509.csv'
 
 @st.cache_data
 def load_data():
@@ -78,26 +78,6 @@ def prediction(model, input):
     input_data = transform_input(input)
     prediction = model.predict(input_data)[0]
     return prediction
-
-# brands = ['Citroen', 'Mercedes-Benz', 'Toyota', 'Mitsubishi', 'Jaguar',
-#        'Hyundai', 'Land-Rover', 'Bmw', 'Kia', 'Skoda', 'Opel',
-#        'Volkswagen', 'Daihatsu', 'Nissan', 'Renault', 'Smart', 'Seat',
-#        'Peugeot', 'Mazda', 'Fiat', 'Audi', 'Ford', 'Lexus', 'Volvo',
-#        'Jeep', 'Mini-Cooper', 'Maserati', 'Ferrari', 'Suzuki',
-#        'Chevrolet', 'Dacia', 'Lancia', 'Porsche', 'Alfa', 'Aston', 'DS',
-#        'Daewoo', 'Subaru', 'Isuzu', 'Caterham', 'Honda', 'Wartburg',
-#        'Autobianchi', 'Lamborghini', 'McLaren', 'TVR', 'Piaggio',
-#        'Infiniti', 'Saab', 'Mg', 'Club', 'Triumph', 'Cadillac', 'Abarth',
-#        'Morgan', 'Chrysler', 'Maybach', 'Lada', 'SsangYong', 'Dodge',
-#        'Buick', 'Rolls', 'Bentley', 'Hummer', 'Austin', 'Corvette',
-#        'Plymouth', 'DR', 'Lotus', 'Rover', 'Lynk&Co', 'Pontiac', 'Iveco',
-#        'Cupra', 'Lincoln']
-
-# gear_box = ['Manual', 'Αυτόματο', 'Ημιαυτόματο']
-
-# gas_types = ['Πετρέλαιο', 'Βενζίνη', 'Αέριο(lpg) - βενζίνη', 'Υβριδικό βενζίνη',
-#        'Υβριδικό plug-in βενζίνη', 'Φυσικό αέριο(cng) - βενζίνη',
-#        'Υβριδικό πετρέλαιο', 'Υβριδικό plug-in πετρέλαιο']
 
 with st.columns([1,2.6,1])[1]:
     st.title('Car Price Prediction', anchor=False)
