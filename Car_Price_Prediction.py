@@ -43,8 +43,8 @@ DATA_PATH = './data/data_clean_20240509.csv'
 def load_data():
     data = pd.read_csv(DATA_PATH, sep=';')
     brands = data['Name'].unique()
-    gear_box = data['Name'].unique()
-    gas_types = data['Name'].unique()
+    gear_box = data['GearBox'].unique()
+    gas_types = data['GasType'].unique()
     return brands, gear_box, gas_types
 
 brands, gear_box, gas_types = load_data()
