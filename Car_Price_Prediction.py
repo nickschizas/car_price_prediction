@@ -20,11 +20,11 @@ n.schizas@outlook.com
 st.sidebar.markdown(f'<em>{about_text}<em>', unsafe_allow_html=True)
 st.sidebar.caption(f'<em>{contact_text}<em>', unsafe_allow_html=True)
 
-@st.cache_data
-def load_model(file_name):
-    models_path = r'./models/'
-    file=open(models_path+file_name, 'rb')
-    return load(file)
+# @st.cache_data
+# def load_model(file_name):
+#     models_path = r'./models/'
+#     file=open(models_path+file_name, 'rb')
+#     return load(file)
 
 @st.cache_data
 def transform_input(input):
@@ -45,12 +45,26 @@ def transform_input(input):
     
     return pd.concat([input_df,input_data_df]).fillna(False)
 
-def prediction(model, input):
+def prediction(input):
+    # Import packages
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.model_selection import train_test_split
+    # Transform input data
     input_data = transform_input(input)
-    prediction = model.predict(input_data)[0]
+    # Load & preprocess the data
+    DATA_PATH = './data/data_clean_20240509.csv'
+    data = pd.read_csv(DATA_PATH, sep=';')
+    data_processed = pd.get_dummies(data, prefix_sep = '_')
+    X = data_processed.drop('Price', axis=1)
+    y = data_processed['Price']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=123)
+    # Define and fit the model
+    rfr = RandomForestRegressor()
+    rfr.fit(X_train, y_train)
+    prediction = rfr.predict(input_data)[0]
     return prediction
 
-model = load_model('RandomForestRegressor.pkl')
+# model = load_model('RandomForestRegressor.pkl')
 
 brands = ['Citroen', 'Mercedes-Benz', 'Toyota', 'Mitsubishi', 'Jaguar',
        'Hyundai', 'Land-Rover', 'Bmw', 'Kia', 'Skoda', 'Opel',
@@ -92,7 +106,7 @@ with st.form(key='input'):
     predict = st.form_submit_button('Predict')
     if predict:
        input = {'Klm':klm, 'CubicCapacity':cc, 'Horsepower':hp, 'Age':age, 'Name':name, 'GasType':gastype, 'GearBox':gearbox}
-       st.session_state['pred'] = prediction(model, input)
+       st.session_state['pred'] = prediction(input)
 
 if 'pred' in st.session_state:
        pred = st.session_state['pred'].copy()
