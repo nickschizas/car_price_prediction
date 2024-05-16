@@ -37,7 +37,7 @@ def transform_input(input):
     input_data_df = pd.DataFrame(input_new, index=[0])
     return pd.concat([input_df,input_data_df]).fillna(False)
 
-DATA_PATH = './data_new/clean/data_clean_20240509.csv'
+DATA_PATH = './data/clean/data_clean_20240509.csv'
 
 @st.cache_data
 def load_data():
