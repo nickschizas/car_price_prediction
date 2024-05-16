@@ -46,7 +46,7 @@ def transform_input(input):
     return pd.concat([input_df,input_data_df]).fillna(False)
 
 @st.cache_data
-def make_model(data):
+def make_model():
     # Load & preprocess the data
     DATA_PATH = './data/data_clean_20240509.csv'
     data = pd.read_csv(DATA_PATH, sep=';')
@@ -129,7 +129,7 @@ with st.form(key='input'):
     predict = st.form_submit_button('Predict')
     if predict:
        input = {'Klm':klm, 'CubicCapacity':cc, 'Horsepower':hp, 'Age':age, 'Name':name, 'GasType':gastype, 'GearBox':gearbox}
-       st.session_state['pred'] = prediction(make_model(data), input)
+       st.session_state['pred'] = prediction(make_model(), input)
 
 if 'pred' in st.session_state:
        pred = st.session_state['pred'].copy()
