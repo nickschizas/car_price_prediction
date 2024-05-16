@@ -53,10 +53,10 @@ def make_model():
     data_processed = pd.get_dummies(data, prefix_sep = '_')
     X = data_processed.drop('Price', axis=1)
     y = data_processed['Price']
+    from sklearn.model_selection import train_test_split
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.2, random_state=123)
     # Import packages
     from sklearn.ensemble import RandomForestRegressor
-    from sklearn.model_selection import train_test_split
     # Define and fit the model
     model = RandomForestRegressor()
     model.fit(X_train, y_train)
