@@ -61,17 +61,22 @@ def train_fit_test():
     # Import packages
     from sklearn.ensemble import RandomForestRegressor
     # Define and fit the model
-    model = RandomForestRegressor()
+    model = RandomForestRegressor(max_depth=25, max_features=20, n_estimators=1000, n_jobs=-1)
     model.fit(X_train, y_train)
     # Gather model metrics
     y_pred = model.predict(X_test)
-    from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-    mse = mean_squared_error(y_test, y_pred)
+    from sklearn.metrics import mean_absolute_error, r2_score
     mae = mean_absolute_error(y_test, y_pred)
-    r2 = r2_score(y_test, y_pred)    
-    return model, mse, mae, r2
+    r2 = r2_score(y_test, y_pred)
 
-model, mse, mae, r2 = train_fit_test()
+    residuals = y_test - y_pred
+    res_mean = np.mean(residuals)
+    res_std = np.std(residuals)
+    
+    return model, mae, r2, residuals, res_mean, res_std
+
+model, mae, r2, residuals, res_mean, res_std = train_fit_test()
+st.session_state.model_stats = {'mae':mae, 'r2':r2, 'residuals':residuals,'res_mean':res_mean, 'res_std':res_std}
 
 def prediction(model, input):
     # Transform input data
