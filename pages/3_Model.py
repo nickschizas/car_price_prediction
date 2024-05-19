@@ -24,7 +24,7 @@ fig.add_vrect(x0=np.mean(residuals)-np.std(residuals), x1=np.mean(residuals)+np.
               annotation_text='68%', annotation_position='top right',
               fillcolor='green', opacity=0.25, line_width=0)
 
-fig.update_layout(showlegend=False, template=template)
+fig.update_layout(showlegend=False, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
 fig.update_xaxes(showgrid=False, showline=False, zeroline=False)
 fig.update_yaxes(showgrid=False, showline=False, zeroline=False)
 
