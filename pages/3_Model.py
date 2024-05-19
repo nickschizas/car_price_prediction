@@ -9,7 +9,7 @@ text = """
 Model used for prediction is an untuned Random Forest Regressor.
 """
 
-st.markdown(f'<em>{text}<em>', unsafe_allow_html=True)
+st.sidebar.markdown(f'<em>{text}<em>', unsafe_allow_html=True)
 
 metric_col = st.columns(4)
 with metric_col[0]:
