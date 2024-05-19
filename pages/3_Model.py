@@ -7,6 +7,7 @@ st.set_page_config(layout="wide", page_title='Model', page_icon=':robot_face:')
 
 text = f"""
 Model used for prediction is an untuned Random Forest Regressor.<br>
+\n
 <b>Model Stats:</b><br>
 R-squared: {"{:.2%}".format(st.session_state.model_stats['r2'])}<br>
 Mean Absolute Error: {"{:,.2f}".format(st.session_state.model_stats['mae'])}<br>
