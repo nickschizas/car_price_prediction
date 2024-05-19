@@ -61,7 +61,7 @@ def train_fit_test():
     # Import packages
     from sklearn.ensemble import RandomForestRegressor
     # Define and fit the model
-    model = RandomForestRegressor(n_jobs=-1) #max_depth=25, max_features=20, n_estimators=1000, 
+    model = RandomForestRegressor(max_depth=25, max_features=20, n_estimators=1000, n_jobs=-1) #max_depth=25, max_features=20, n_estimators=1000, 
     model.fit(X_train, y_train)
     # Gather model metrics
     y_pred = model.predict(X_test)
