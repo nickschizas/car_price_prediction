@@ -25,8 +25,9 @@ with st.expander('Confidence Interval of Residual Mean', expanded=False):
   conf_level = st.slider('Bootstrap Confidence Interval', min_value=.5, max_value=.99, value=.95, step=.05)
   boot = bootstrap((residuals,), np.mean, confidence_level=conf_level)
   conf_int = boot.confidence_interval
-  text = f'{conf_level*100}% confidence interval of residuals mean ({"{:,.2f}".format(conf_int['low'])},{"{:,.2f}".format(conf_int['high'])})'
-  st.markdown(text, unsafe_allow_html=True)
+  # text = f'{conf_level*100}% confidence interval of residuals mean ({"{:,.2f}".format(conf_int['low'])},{"{:,.2f}".format(conf_int['high'])})'
+  # st.markdown(text, unsafe_allow_html=True)
+  conf_int.dtype()
 
 fig = make_subplots(rows=1, cols=2, subplot_titles=('Residuals Plot', 'Residuals Histogram'))
 fig.add_trace(go.Scatter(x=residuals.index, y=residuals, mode='markers', marker={'color':'#1f77b4', 'opacity':0.6}, hoverinfo='y'), row=1, col=1)
