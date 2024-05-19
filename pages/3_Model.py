@@ -5,8 +5,10 @@ from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide", page_title='Model', page_icon=':robot_face:')
 
-text = """
-Model used for prediction is an untuned Random Forest Regressor.
+text = f"""
+Model used for prediction is an untuned Random Forest Regressor.<br>
+**Model Stats**<br>
+R-squared: {"{:.2%}".format(st.session_state.model_stats['r2'])}
 """
 
 st.sidebar.markdown(f'<em>{text}<em>', unsafe_allow_html=True)
