@@ -22,7 +22,7 @@ st.sidebar.markdown(f'<em>{text}<em>', unsafe_allow_html=True)
 residuals = st.session_state.model_stats['residuals']
 
 with st.expander('Confidence Interval of Residual Mean', expanded=False):
-  conf_level = st.slider('Bootstrap Confidence Interval', min_value=.5, max_value=.99, value=.95, step=.05)
+  conf_level = st.number_input('Bootstrap Confidence Interval', min_value=.85, max_value=.99, value=.95, step=.01)
   boot = bootstrap((residuals,), np.mean, confidence_level=.99)
   conf_int = boot.confidence_interval
   text = f'{conf_level*100}% confidence interval of residuals mean ({"{:,.2f}".format(conf_int[0])},{"{:,.2f}".format(conf_int[1])}) with standard error {"{:,.2f}".format(boot.standard_error)}'
