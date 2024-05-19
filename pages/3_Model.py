@@ -1,5 +1,7 @@
 import streamlit as st
 import numpy as np
+from scipy.stats import bootstrap
+
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -18,6 +20,12 @@ Residuals Std: {"{:,.2f}".format(st.session_state.model_stats['res_std'])}
 st.sidebar.markdown(f'<em>{text}<em>', unsafe_allow_html=True)
 
 residuals = st.session_state.model_stats['residuals']
+
+boot_99 = bootstrap(residuals, np.mean, confidence_level=0.99)
+boot_95 = bootstrap(residuals, np.mean, confidence_level=0.95)
+boot_99
+boot_95
+
 fig = make_subplots(rows=1, cols=2, subplot_titles=('Residuals Plot', 'Residuals Histogram'))
 fig.add_trace(go.Scatter(x=residuals.index, y=residuals, mode='markers', marker={'color':'#1f77b4', 'opacity':0.6}, hoverinfo='y'), row=1, col=1)
 fig.add_hline(y=0, row=1, col=1, line={'color':'red', 'dash':'dot'})
