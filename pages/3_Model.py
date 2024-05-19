@@ -1,10 +1,9 @@
 import streamlit as st
+import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide", page_title='Model', page_icon=':robot_face:')
-
-st.session_state.model_stats
 
 metric_col = st.columns(4)
 with metric_col[0]:
